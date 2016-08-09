@@ -1,14 +1,17 @@
 package link.gerry.common.permisssion.service.impl;
 
 import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 import link.gerry.common.permisssion.dao.PermissionDAO;
 import link.gerry.common.permisssion.model.Permission;
 import link.gerry.common.permisssion.service.PermissionService;
 
-public class PermissionServiceImpl implements PermissionService {
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.gerry.common.framework.utils.recursive.AbstractRecursive;
+
+public class PermissionServiceImpl extends AbstractRecursive<Permission> implements PermissionService {
 
 	@Autowired
 	private PermissionDAO permissionDAO;
@@ -35,4 +38,19 @@ public class PermissionServiceImpl implements PermissionService {
 		return permissionDAO.updatePermission(t) ? 1 : 0;
 	}
 
+	@Override
+	public List<Permission> findCommonPermissionByParentId(Integer parentId) {
+		return permissionDAO.getPermissionsByParentId(parentId);
+	}
+
+	@Override
+	public List<Permission> parentNodes(Permission recursiveNode) {
+		return findCommonPermissionByParentId(recursiveNode.getParentId());
+	}
+
+	public static void main(String[] args) {
+		PermissionServiceImpl aImpl = new PermissionServiceImpl();
+		aImpl.recursive(null);
+		System.out.println("dd");
+	}
 }

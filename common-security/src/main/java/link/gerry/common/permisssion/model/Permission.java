@@ -5,11 +5,11 @@ import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import com.gerry.common.framework.model.BaseModel;
+import com.gerry.common.framework.utils.recursive.RecursiveNode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Permission extends BaseModel {
+public class Permission extends RecursiveNode {
 
 	/**
 	 * serialVersionUID
