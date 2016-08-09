@@ -21,6 +21,9 @@ public interface PermissionDAO {
 	@SQL("select " + ALL_COLUMNS + " from #table where id = :1")
 	Permission getPermission(long id);
 
+	@SQL("select " + ALL_COLUMNS + " from #table")
+	List<Permission>allPermissions();
+	
 	@SQL("select " + ALL_COLUMNS + " from #table where parent_id = :1")
 	List<Permission> getPermissionsByParentId(Integer parentId);
 	
