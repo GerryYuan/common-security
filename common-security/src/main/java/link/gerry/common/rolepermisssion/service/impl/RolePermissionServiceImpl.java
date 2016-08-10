@@ -3,11 +3,13 @@ package link.gerry.common.rolepermisssion.service.impl;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import link.gerry.common.rolepermisssion.dao.RolePermissionDAO;
 import link.gerry.common.rolepermisssion.model.RolePermission;
 import link.gerry.common.rolepermisssion.service.RolePermissionService;
 
+@Service
 public class RolePermissionServiceImpl implements RolePermissionService {
 
 	@Autowired

@@ -3,11 +3,13 @@ package link.gerry.common.userrole.service.impl;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import link.gerry.common.userrole.dao.UserRoleDAO;
 import link.gerry.common.userrole.model.UserRole;
 import link.gerry.common.userrole.service.UserRoleService;
 
+@Service
 public class UserRoleServiceImpl implements UserRoleService {
 
 	@Autowired

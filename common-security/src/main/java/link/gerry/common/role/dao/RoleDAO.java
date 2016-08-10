@@ -1,10 +1,13 @@
 package link.gerry.common.role.dao;
 
+import java.util.List;
+
 import link.gerry.common.role.model.Role;
 
 import org.jfaster.mango.annotation.DB;
 import org.jfaster.mango.annotation.ReturnGeneratedId;
 import org.jfaster.mango.annotation.SQL;
+
 
 @DB(table = "common_role")
 public interface RoleDAO {
@@ -18,6 +21,9 @@ public interface RoleDAO {
 
 	@SQL("select " + ALL_COLUMNS + " from #table where id = :1")
 	Role getRole(long id);
+	
+	@SQL("select " + ALL_COLUMNS + " from #table")
+	List<Role> allRoles();
 
 	@SQL("update #table set name=:name, status=:status, create_time=:createTime, update_time=:updateTime where id = :id")
 	boolean updateRole(Role role);
