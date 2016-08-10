@@ -7,10 +7,12 @@ import java.util.List;
 import link.gerry.common.permisssion.dao.PermissionDAO;
 import link.gerry.common.permisssion.model.Permission;
 import link.gerry.common.permisssion.service.PermissionService;
+import link.gerry.common.redis.RedisHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.gerry.common.framework.redis.RedisConstant;
@@ -19,6 +21,7 @@ import com.gerry.common.framework.utils.EmptyUtils;
 import com.gerry.common.framework.utils.recursive.AbstractRecursive;
 
 @Slf4j
+@Service
 public class PermissionServiceImpl extends AbstractRecursive<Permission> implements PermissionService, InitializingBean {
 
 	@Autowired
@@ -61,22 +64,21 @@ public class PermissionServiceImpl extends AbstractRecursive<Permission> impleme
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// 加载
-		log.info("加载权限");
 		loadResources();
 	}
 
 	private void loadResources() {
+		log.info("开始加载权限资源...");
 		List<Permission> permissions = permissionDAO.allPermissions();
 		List<Permission> parentPermission = new ArrayList<Permission>();
 		for (Permission permission : permissions) {
 			if (EmptyUtils.isEmpty(permission.getParentId())) {
 				parentPermission.add(permission);
 			}
-			List<Permission> permissionChild = findCommonPermissionByParentId(permission.getId());
-			if (EmptyUtils.isNotEmpty(permissionChild)) {
-				redisManager.saveObjectBySeconds("key", JSON.toJSONString(permissionChild), RedisConstant.DEFAULT_WEEK_SECONDS);// 添加权限到redis
-			}
+			redisManager.saveObjectBySeconds(RedisHelper.getPermissionKey(permission.getId()), JSON.toJSONString(permission), RedisConstant.DEFAULT_WEEK_SECONDS);
 		}
+		redisManager.saveObjectBySeconds(RedisHelper.getPermissionKey(), JSON.toJSONString(parentPermission), RedisConstant.DEFAULT_WEEK_SECONDS);// 添加权限到redis
+		log.info("权限资源加载结束，总共加载{}个权限资源，{}个父权限资源...", permissions.size(), parentPermission.size());
 	}
+
 }
