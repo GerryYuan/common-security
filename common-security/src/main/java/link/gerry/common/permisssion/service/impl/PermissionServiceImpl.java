@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.gerry.common.framework.redis.RedisConstant;
-import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.redis.RedisKVCache;
 import com.gerry.common.framework.utils.EmptyUtils;
 import com.gerry.common.framework.utils.recursive.AbstractRecursive;
 
@@ -28,7 +28,7 @@ public class PermissionServiceImpl extends AbstractRecursive<Permission> impleme
 	private PermissionDAO permissionDAO;
 
 	@Autowired
-	private RedisManager<String, String> redisManager;
+	private RedisKVCache<String, String> redisKVCache;
 
 	@Override
 	public Permission getById(Integer id) {
@@ -75,9 +75,9 @@ public class PermissionServiceImpl extends AbstractRecursive<Permission> impleme
 			if (EmptyUtils.isEmpty(permission.getParentId())) {
 				parentPermission.add(permission);
 			}
-			redisManager.saveObjectBySeconds(RedisHelper.getPermissionKey(permission.getId()), JSON.toJSONString(permission), RedisConstant.DEFAULT_WEEK_SECONDS);
+			redisKVCache.saveObjectBySeconds(RedisHelper.getPermissionKey(permission.getId()), JSON.toJSONString(permission), RedisConstant.DEFAULT_WEEK_SECONDS);
 		}
-		redisManager.saveObjectBySeconds(RedisHelper.getPermissionKey(), JSON.toJSONString(parentPermission), RedisConstant.DEFAULT_WEEK_SECONDS);// 添加权限到redis
+		redisKVCache.saveObjectBySeconds(RedisHelper.getPermissionKey(), JSON.toJSONString(parentPermission), RedisConstant.DEFAULT_WEEK_SECONDS);// 添加权限到redis
 		log.info("权限资源加载结束，总共加载{}个权限资源，{}个父权限资源...", permissions.size(), parentPermission.size());
 	}
 

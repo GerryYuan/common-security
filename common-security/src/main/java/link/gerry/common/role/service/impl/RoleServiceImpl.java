@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.gerry.common.framework.redis.RedisConstant;
-import com.gerry.common.framework.redis.RedisManager;
+import com.gerry.common.framework.redis.RedisKVCache;
 
 @Service
 @Slf4j
@@ -25,7 +25,7 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
 	private RoleDAO roleDAO;
 
 	@Autowired
-	private RedisManager<String, String> redisManager;
+	private RedisKVCache<String, String> redisKVCache;
 
 	@Override
 	public Role getById(Integer id) {
@@ -53,7 +53,7 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		log.info("开始加载角色资源...");
 		List<Role> roles = roleDAO.allRoles();
-		redisManager.saveObjectBySeconds(RedisHelper.getRoleKey(), JSON.toJSONString(roles), RedisConstant.DEFAULT_WEEK_SECONDS);
+		redisKVCache.saveObjectBySeconds(RedisHelper.getRoleKey(), JSON.toJSONString(roles), RedisConstant.DEFAULT_WEEK_SECONDS);
 		log.info("角色资源加载结束，总共加载{}个角色资源...", roles.size());
 	}
 
